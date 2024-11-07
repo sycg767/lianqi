@@ -18,14 +18,15 @@
 	<style>
 	body{
 		padding:10px;
-		font-size: 16px;
+		font-size: 18px;
 		margin: 0;
+		text-align: center;
 	}
 	input{
-		width:21vw;
-		height:21vw;
-		max-width:80px;
-		max-height:80px;
+		width:23vw;
+		height:23vw;
+		max-width:120px;
+		max-height:120px;
 		text-align:right;
 		font-size:18px;
 		background-color:rgb(61,130,153);
@@ -54,11 +55,12 @@
 		font-size: 20px;
 	}
 	#grid{
-		width:90%;
-		margin:5px auto;
-		padding:2px;
+		width:95%;
+		margin:10px auto;
+		padding:5px;
 		min-width:auto;
-		max-width:400px;
+		max-width:600px;
+		text-align: center;
 	}
 
 	/* 添加按钮样式 */
@@ -141,6 +143,7 @@
 		.wechat .title {
 			font-size: 14px;
 			margin-bottom: 8px;
+			padding: 0 5px;
 		}
 		
 		.wechat #grid {
@@ -171,6 +174,25 @@
 			font-size: 16px !important;
 		}
 	}
+
+	/* 添加桌面端的特定样式 */
+	@media screen and (min-width: 768px) {
+		input {
+			width: 120px;
+			height: 120px;
+			margin: 3px;
+		}
+		
+		#grid {
+			max-width: 600px;
+		}
+		
+		button {
+			font-size: 16px;
+			padding: 8px 16px;
+			margin: 8px 4px;
+		}
+	}
 	</style>
   </head>
 
@@ -189,8 +211,8 @@
 	</script>
 
 	<div class="title">
-	炼器AI辅助工具，仅供内部学习参考<br>
-	此工具由 <span style="color:red; font-size: 22px;">暮影山 长乐茶馆</span> 免费提供，仅供娱乐<br>
+	炼器AI辅助工具<br>
+	此工具由 <span style="color:red; font-size: 22px;">暮影山 长乐茶馆</span> 提供，仅供娱乐<br>
 	</div>
 	<div id="grid">
 		<button onclick="clear1()">全部清空</button> <button id="go">走一步</button> 最优移动方向：<span id="dir"></span><br>
