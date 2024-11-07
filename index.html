@@ -74,6 +74,38 @@
 		font-size: 20px;
 		font-weight: bold;
 	}
+			/* 添加响应式样式 */
+	@media screen and (max-width: 768px) {
+		/* 确保容器不会溢出屏幕 */
+		.container {
+			width: 100%;
+			padding: 10px;
+			box-sizing: border-box;
+		}
+		
+		/* 调整网格布局 */
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 10px;
+			padding: 10px;
+		}
+		
+		/* 确保按钮和其他元素适应移动端大小 */
+		button {
+			padding: 8px 16px;
+			font-size: 14px;
+		}
+		
+		/* 调整文字大小 */
+		h1, h2 {
+			font-size: 1.2rem;
+		}
+		
+		p {
+			font-size: 1rem;
+		}
+	}
 	</style>
   </head>
 
