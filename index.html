@@ -1,140 +1,151 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<html>
+
+  <head>
+    <meta charset="utf-8">
     <title>炼器辅助工具</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: #f5f5f5;
-            min-height: 100vh;
-        }
+    <link rel="stylesheet" href="vendor/2048.min.css">
+    <link rel="stylesheet" href="ai.css">
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1, user-scalable=no, minimal-ui">
+	<style>
+	body{
+		padding:10px;
+		font-size: 18px;
+	}
+	input{
+		width:23vw;
+		height:23vw;
+		max-width:110px;
+		max-height:110px;
+		text-align:right;
+		font-size:18px;
+		background-color:rgb(61,130,153);
+		background-size:100% 100%;
+		padding-left:0px;
+		padding-right:2px;
+		margin-left:2px;
+		margin-top:4px;
+		border:0 solid;
+		caret-color: transparent;
+		user-select: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		cursor: pointer;
+	}
 
-        .container {
-            max-width: 100%;
-            padding: 15px;
-            margin: 0 auto;
-        }
+	/* 禁用输入框获取焦点时的边框 */
+	input:focus {
+		outline: none;
+		border: 0 solid;
+	}
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+	.n{
+		color: rgb(229, 63, 49);
+		font-size: 20px;
+	}
+	#grid{
+		width:100%;
+		margin:5px;
+		padding:5px;
+		 min-width:400px;
+	}
 
-        .title {
-            font-size: 1.2rem;
-            color: #333;
-            margin-bottom: 10px;
-        }
+	/* 添加按钮样式 */
+	button {
+		font-size: 18px;
+		padding: 10px 20px;
+		margin: 10px 5px;
+		cursor: pointer;
+	}
 
-        .subtitle {
-            font-size: 1rem;
-            color: #666;
-        }
+	/* 增加标题和说明文字的样式 */
+	.title {
+		font-size: 24px;
+		margin-bottom: 15px;
+	}
 
-        .red-text {
-            color: #ff4d4f;
-        }
+	#dir {
+		font-size: 20px;
+		font-weight: bold;
+	}
+	</style>
+  </head>
 
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
+  <body>
+ 	<div class="title">
+ 	炼器AI辅助工具，仅供内部学习参考<br>
+	此工具由 <span style="color:red; font-size: 22px;">暮影山 长乐茶馆</span> 免费提供，仅供娱乐<br>
+	</div>
+  <div id="grid">
+   <button onclick="clear1()">全部清空</button> <button id="go">走一步</button> 最优移动方向：<span id="dir"></span><br>
+	<input class="cell" readonly oncontextmenu="return false" id="grid_0_0" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_0_1" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_0_2" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_0_3" onchange="setGrid()" /><br>
+	<input class="cell" readonly oncontextmenu="return false" id="grid_1_0" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_1_1" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_1_2" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_1_3" onchange="setGrid()" /><br>
+	<input class="cell" readonly oncontextmenu="return false" id="grid_2_0" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_2_1" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_2_2" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_2_3" onchange="setGrid()" /><br>
+	<input class="cell" readonly oncontextmenu="return false" id="grid_3_0" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_3_1" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_3_2" onchange="setGrid()" />
+	<input class="cell" readonly oncontextmenu="return false" id="grid_3_3" onchange="setGrid()" />
+  </div>
 
-        button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            background-color: #f0f0f0;
-            color: #1890ff;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .direction-text {
-            color: #666;
-            margin-bottom: 15px;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding: 10px 0;
-        }
-
-        .grid-item {
-            aspect-ratio: 1;
-            background-color: #5b9bd5;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        @media screen and (max-width: 480px) {
-            .container {
-                padding: 10px;
-            }
-
-            .grid-container {
-                gap: 8px;
-            }
-
-            button {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1 class="title">炼器AI辅助工具，仅供内部学习参考</h1>
-            <p class="subtitle">此工具由 <span class="red-text">暮影山 长乐茶馆</span> 免费提供，仅供娱乐</p>
-        </div>
-
-        <div class="button-group">
-            <button onclick="clearAll()">全部清空</button>
-            <button onclick="stepBack()">走一步</button>
-        </div>
-
-        <div class="direction-text">最优移动方向：下</div>
-
+    <div class="container" style="display:none">
+      <div class="game-container">
         <div class="grid-container">
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
+          <div class="grid-row">
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+          </div>
+          <div class="grid-row">
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+          </div>
+          <div class="grid-row">
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+          </div>
+          <div class="grid-row">
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+          </div>
         </div>
+
+        <div class="tile-container">
+        </div>
+      </div>
     </div>
+	<script type="module" src="main1.2.js"></script>
+	<script>
+	let cells=document.getElementsByClassName('cell');for(let i=0;i<cells.length;i++){cells[i].addEventListener('mousedown',(e)=>{let val=cells[i].value;if(val=='')val=0;if(e.offsetX>e.srcElement.offsetWidth/2){val++}else{val--}if(val<=0)val='';if(val>11){val=11}cells[i].value=val;if(val!=''){cells[i].style.backgroundImage=`url(./img/${val}.png)`;if(cells[i].className!='cell n')cells[i].classList.add('n')}else{cells[i].style.backgroundImage=``;cells[i].classList.remove('n')}setGrid()})}let eleven=0;let dir_text=['上','右','下','左'];let set=false;let last=JSON.parse(localStorage["gameState"]);function getGrid(dir){let json=JSON.parse(localStorage["gameState"]);let cell=json.grid.cells;for(let i=0;i<4;i++){for(let j=0;j<4;j++){if(cell[i][j]!=null){let val=Math.log2(cell[i][j].value);if(val>11)val=11;document.getElementById(`grid_${j}_${i}`).value=val;document.getElementById(`grid_${j}_${i}`).style.backgroundImage=`url(./img/${val}.png)`}else{document.getElementById(`grid_${j}_${i}`).value='';document.getElementById(`grid_${j}_${i}`).style.backgroundImage=``}}}if(dir!=undefined){document.getElementById('dir').innerHTML=dir_text[dir]}}function setGrid(a){let data={grid:{size:4,cells:[[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null]]},score:0,over:false,won:false,keepPlaying:false};let eleven=13;for(let x=0;x<4;x++){for(let y=0;y<4;y++){let d=document.getElementById(`grid_${x}_${y}`).value;if(d>0){if(d==11){d=eleven++}data.grid.cells[y][x]={position:{x:y,y:x},value:Math.pow(2,d)}}}}localStorage["gameState"]=JSON.stringify(data);game.setup()}function clear1(){let data={grid:{size:4,cells:[[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null]]},score:0,over:false,won:false,keepPlaying:false};localStorage["gameState"]=JSON.stringify(data);getGrid()}getGrid();
 
-    <script>
-        function clearAll() {
-            // 清空功能实现
-            console.log('清空所有');
-        }
-
-        function stepBack() {
-            // 后退一步功能实现
-            console.log('后退一步');
-        }
-    </script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?138132ab8e80548070b4b56cd1fd73e3";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
 </body>
 </html>
