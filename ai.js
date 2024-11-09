@@ -203,7 +203,7 @@ var dataURIPrefix = "data:application/octet-stream;base64,";
 var isDataURI = filename => filename.startsWith(dataURIPrefix);
 var isFileURI = filename => filename.startsWith("file://");
 function findWasmBinary() {
-    var f = "ai.wasm";
+    var f = "ai1.3.wasm";
     if (!isDataURI(f)) {
         return locateFile(f)
     }
@@ -257,9 +257,9 @@ function createWasm() {
     var info = getWasmImports();
     function receiveInstance(instance, module) {
         wasmExports = instance.exports;
-        wasmMemory = wasmExports["u"];
+        wasmMemory = wasmExports["v"];
         updateMemoryViews();
-        addOnInit(wasmExports["v"]);
+        addOnInit(wasmExports["w"]);
         removeRunDependency("wasm-instantiate");
         return wasmExports
     }
@@ -957,6 +957,30 @@ var _emscripten_run_script = ptr => {
     eval(UTF8ToString(ptr))
 }
 ;
+var initRandomFill = () => {
+    if (typeof crypto == "object" && typeof crypto["getRandomValues"] == "function") {
+        return view => crypto.getRandomValues(view)
+    } else if (ENVIRONMENT_IS_NODE) {
+        try {
+            var crypto_module = require("crypto");
+            var randomFillSync = crypto_module["randomFillSync"];
+            if (randomFillSync) {
+                return view => crypto_module["randomFillSync"](view)
+            }
+            var randomBytes = crypto_module["randomBytes"];
+            return view => (view.set(randomBytes(view.byteLength)),
+            view)
+        } catch (e) {}
+    }
+    abort("initRandomDevice")
+}
+;
+var randomFill = view => (randomFill = initRandomFill())(view);
+var _getentropy = (buffer, size) => {
+    randomFill(HEAPU8.subarray(buffer, buffer + size));
+    return 0
+}
+;
 var runtimeKeepaliveCounter = 0;
 var keepRuntimeAlive = () => noExitRuntime || runtimeKeepaliveCounter > 0;
 var _proc_exit = code => {
@@ -998,7 +1022,7 @@ InternalError = Module["InternalError"] = class InternalError extends Error {
 init_emval();
 var wasmImports = {
     r: __abort_js,
-    n: __embind_register_bigint,
+    m: __embind_register_bigint,
     p: __embind_register_bool,
     o: __embind_register_emval,
     e: __embind_register_float,
@@ -1010,21 +1034,22 @@ var wasmImports = {
     g: __emscripten_get_now_is_monotonic,
     l: __emval_as,
     k: __emval_decref,
-    s: __emval_get_global,
-    m: __emval_get_property,
+    t: __emval_get_global,
+    n: __emval_get_property,
     i: __emval_run_destructors,
     j: __emval_take_value,
     f: _emscripten_get_now,
     h: _emscripten_resize_heap,
-    t: _emscripten_run_script
+    u: _emscripten_run_script,
+    s: _getentropy
 };
 var wasmExports = createWasm();
-var ___wasm_call_ctors = () => (___wasm_call_ctors = wasmExports["v"])();
-var _jsWork = Module["_jsWork"] = (a0, a1, a2, a3, a4) => (_jsWork = Module["_jsWork"] = wasmExports["w"])(a0, a1, a2, a3, a4);
-var _malloc = a0 => (_malloc = wasmExports["x"])(a0);
-var _main = Module["_main"] = (a0, a1) => (_main = Module["_main"] = wasmExports["y"])(a0, a1);
-var ___getTypeName = a0 => (___getTypeName = wasmExports["A"])(a0);
-var _free = a0 => (_free = wasmExports["B"])(a0);
+var ___wasm_call_ctors = () => (___wasm_call_ctors = wasmExports["w"])();
+var _jsWork = Module["_jsWork"] = (a0, a1, a2, a3, a4) => (_jsWork = Module["_jsWork"] = wasmExports["x"])(a0, a1, a2, a3, a4);
+var _malloc = a0 => (_malloc = wasmExports["y"])(a0);
+var _main = Module["_main"] = (a0, a1) => (_main = Module["_main"] = wasmExports["z"])(a0, a1);
+var ___getTypeName = a0 => (___getTypeName = wasmExports["B"])(a0);
+var _free = a0 => (_free = wasmExports["C"])(a0);
 var calledRun;
 var calledPrerun;
 dependenciesFulfilled = function runCaller() {
