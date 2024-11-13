@@ -213,6 +213,7 @@
 	<div class="title">
 	炼器AI辅助工具<br>
 	此工具由 <span style="color:red; font-size: 22px;">暮影山 长乐茶馆</span> 提供，仅供娱乐<br>
+		更新时间:2024-11-13
 	</div>
 	<div id="grid">
 		<button onclick="clear1()">全部清空</button> <button id="go">走一步</button> 最优移动方向：<span id="dir"></span><br>
@@ -267,7 +268,7 @@
 			</div>
 		</div>
 	</div>
-	<script type="module" src="main1.2.js"></script>
+	<script type="module" src="main1.3.js"></script>
 	<script>
 	let cells=document.getElementsByClassName('cell');for(let i=0;i<cells.length;i++){cells[i].addEventListener('mousedown',(e)=>{let val=cells[i].value;if(val=='')val=0;if(e.offsetX>e.srcElement.offsetWidth/2){val++}else{val--}if(val<=0)val='';if(val>11){val=11}cells[i].value=val;if(val!=''){cells[i].style.backgroundImage=`url(./img/${val}.png)`;if(cells[i].className!='cell n')cells[i].classList.add('n')}else{cells[i].style.backgroundImage=``;cells[i].classList.remove('n')}setGrid()})}let eleven=0;let dir_text=['上','右','下','左'];let set=false;let last=JSON.parse(localStorage["gameState"]);function getGrid(dir){let json=JSON.parse(localStorage["gameState"]);let cell=json.grid.cells;for(let i=0;i<4;i++){for(let j=0;j<4;j++){if(cell[i][j]!=null){let val=Math.log2(cell[i][j].value);if(val>11)val=11;document.getElementById(`grid_${j}_${i}`).value=val;document.getElementById(`grid_${j}_${i}`).style.backgroundImage=`url(./img/${val}.png)`}else{document.getElementById(`grid_${j}_${i}`).value='';document.getElementById(`grid_${j}_${i}`).style.backgroundImage=``}}}if(dir!=undefined){document.getElementById('dir').innerHTML=dir_text[dir]}}function setGrid(a){let data={grid:{size:4,cells:[[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null]]},score:0,over:false,won:false,keepPlaying:false};let eleven=13;for(let x=0;x<4;x++){for(let y=0;y<4;y++){let d=document.getElementById(`grid_${x}_${y}`).value;if(d>0){if(d==11){d=eleven++}data.grid.cells[y][x]={position:{x:y,y:x},value:Math.pow(2,d)}}}}localStorage["gameState"]=JSON.stringify(data);game.setup()}function clear1(){let data={grid:{size:4,cells:[[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null]]},score:0,over:false,won:false,keepPlaying:false};localStorage["gameState"]=JSON.stringify(data);getGrid()}getGrid();
 
